@@ -1,5 +1,6 @@
-import { useContext, useReducer, createContext } from 'react'
-import CategoryReducer from '../reducers/CategoryReducer'
+import { useContext, useReducer, createContext, useEffect } from 'react'
+import CategoriesReducer from '../reducers/CategoryReducer'
+import axios from 'axios'
 
 const CategoryContext = createContext()
 
@@ -14,10 +15,26 @@ const initaialState = {
 }
 
 export const CategoryProvider =({ children }) => {
-    const [category, categoryDispatch] = useReducer(CategoryReducer, initaialState)
+    const [categories, categoriesDispatch] = useReducer(CategoriesReducer, initaialState)
+
+    useEffect(() => {
+        (async () => {
+          try {
+
+            const response = await axios.get('http://localhost:3010/api/categories', {
+              headers: {
+                'Authorization': localStorage.getItem('token')
+              }
+            });
+            categoriesDispatch({ type: 'SET_CATEGORIES', payload: response.data });
+          } catch (err) {
+            categoriesDispatch({ type: 'ERROR', payload: err });
+          }
+        })();
+      }, [categoriesDispatch]);
 
     return(
-        <CategoryContext.Provider value={{ category, categoryDispatch }}>
+        <CategoryContext.Provider value={{ categories, categoriesDispatch }}>
             { children }
         </CategoryContext.Provider>
     )

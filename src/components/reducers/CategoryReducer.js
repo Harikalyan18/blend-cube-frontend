@@ -1,12 +1,15 @@
-const CategoryReducer = (category, action) => {
+const CategoriesReducer = (categories, action) => {
     switch(action.type) {
         case 'ADD_CATEGORY': {
-            return {...category, data:[...category, action.payload]}
+            return {...categories, data:[...categories, action.payload]}
+        }
+        case 'SET_CATEGORIES': {
+            return { ...categories, data: action.payload }
         }
         default: {
-            return category
+            return categories
         }
     }
 }
 
-export default CategoryReducer
+export default CategoriesReducer

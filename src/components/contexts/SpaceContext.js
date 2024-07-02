@@ -1,5 +1,6 @@
-import { useContext, useReducer, createContext } from "react";
+import { useContext, useReducer, createContext, useEffect } from "react";
 import SpaceReducer from "../reducers/SpaceReducer";
+import axios from 'axios'
 
 const SpaceContext = createContext()
 
@@ -14,10 +15,28 @@ const initialState = {
 }
 
 export const SpaceProvider = ({ children }) => {
-    const [space, spaceDispatch] = useReducer(SpaceReducer, initialState)
-        console.log(space)
+    const [spaces, spacesDispatch] = useReducer(SpaceReducer, initialState)
+
+        useEffect(() => {
+            (async() => {
+                spacesDispatch({ type: 'LOADING' });
+                try {
+                    const response = await axios.get('http://localhost:3010/api/spaces', {
+                        headers: {
+                          Authorization: localStorage.getItem('token')
+                        }
+                      })
+                      console.log(response.data)
+                      spacesDispatch({ type: 'SET_SPACES', payload: response.data})
+                } catch(err) {
+                    console.log(err)
+                    spacesDispatch({ type: 'ERROR', payload: err });
+                }
+            })();
+          }, [spacesDispatch])
+
     return (
-        <SpaceContext.Provider value={{ space, spaceDispatch }}>
+        <SpaceContext.Provider value={{ spaces, spacesDispatch }}>
             { children}
         </SpaceContext.Provider>
     )

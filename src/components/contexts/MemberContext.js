@@ -8,7 +8,7 @@ export const useMember = () => {
 }
 
 const initialState = {
-    data: [],
+    data: {},
     isLoading: false,
     error: null
 }

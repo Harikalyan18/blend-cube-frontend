@@ -2,13 +2,13 @@ import { useCategory } from "../../contexts/CategoriesContext"
 
 export default function CategoryList() {
 
-    const { category } = useCategory()
+    const { categories } = useCategory()
  
     return (
         <div>
-            <h2>Categoties - </h2>
+            <h2>Categoties - {categories.data.length}</h2>
             <ul>
-                {category.data.map((ele) => {
+                {categories.data.map((ele) => {
                     return <li key={ele._id}>{ele.name}</li>
                 })}
             </ul>

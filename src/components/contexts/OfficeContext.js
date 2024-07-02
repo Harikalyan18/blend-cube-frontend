@@ -1,5 +1,6 @@
-import { useContext, useReducer, createContext } from 'react'
+import { useContext, useReducer, createContext, useEffect } from 'react'
 import OfficesReducer from '../reducers/officesReducer'
+import axios from 'axios'
 
 const OfficeContext = createContext()
 
@@ -13,22 +14,25 @@ const initialState = {
     error: null
 }
 
-// const officesReducer = (office, action) => {
-//     switch(action.type) {
-//         case 'SET_OFFICES': {
-//             return { ...office, data: action.payload }
-//         }
-//         default: {
-//             return office
-//         }
-//     }
-// }
-
 export const OfficeProvider = ({ children }) => { 
-    const [ office, officeDispatch ] = useReducer(OfficesReducer, initialState)
-    console.log(office)
+    const [ offices, officesDispatch ] = useReducer(OfficesReducer, initialState)
+    console.log(offices)
+
+    useEffect(() => {
+        (async() => {
+            officesDispatch({ type: 'LOADING' });
+            try {
+                const response = await axios.get('http://localhost:3010/api/offices')
+                officesDispatch({ type: 'SET_OFFICES', payload: response.data})
+            } catch(err) {
+                console.log(err)
+                officesDispatch({ type: 'ERROR', payload: err });
+                }
+            })();
+        }, [])
+
     return( 
-    <OfficeContext.Provider value={{ office, officeDispatch }}>
+    <OfficeContext.Provider value={{ offices, officesDispatch }}>
         { children}
     </OfficeContext.Provider>
     )

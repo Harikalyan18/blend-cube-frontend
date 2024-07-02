@@ -4,7 +4,7 @@ import { useCategory } from '../../contexts/CategoriesContext'
 
 export default function CategoryForm() {
 
-    const { categoryDispatch } = useCategory()
+    const { categoriesDispatch } = useCategory()
     const [form, setForm] = useState({
         name: '',
         description:''
@@ -26,7 +26,7 @@ export default function CategoryForm() {
                 }   
             })
             console.log(response.data)
-            categoryDispatch({ type: 'ADD_CATEGORY', payload: response.date})
+            categoriesDispatch({ type: 'ADD_CATEGORY', payload: response.date})
 
         } catch(err) {
             console.log(err)
